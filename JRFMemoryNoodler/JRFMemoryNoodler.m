@@ -10,30 +10,43 @@
 
 #import "JRFMemoryNoodler.h"
 
+#include <sys/stat.h>
+
 NSString *JRFPreviousBundleVersionKey = @"JRFPreviousBundleVersionKey";
 NSString *JRFAppWasTerminatedKey = @"JRFAppWasTerminatedKey";
 NSString *JRFAppWasInBackgroundKey = @"JRFAppWasInBackgroundKey";
 NSString *JRFAppDidCrashKey = @"JRFAppDidCrashKey";
 NSString *JRFPreviousOSVersionKey = @"JRFPreviousOSVersionKey";
-NSString *JRFAppDidAbortKey = @"JRFAppDidAbortKey";
+static char *intentionalQuitPathname;
 
 @implementation JRFMemoryNoodler
 
 + (void)beginMonitoringMemoryEventsWithHandler:(JRFOutOfMemoryEventHandler)handler
                                  crashDetector:(JRFCrashDetector)crashDetector {
-    
+
     [[self sharedInstance] beginApplicationMonitoring];
     signal(SIGABRT, JRFIntentionalQuitHandler);
     signal(SIGQUIT, JRFIntentionalQuitHandler);
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+
+    // Set up the static path for intentional aborts
+    NSString *appSupportDirectory = [paths objectAtIndex:0];
+    NSString *fileName = [NSString stringWithFormat:@"%@/intentionalquit.txt", appSupportDirectory];
+    intentionalQuitPathname = strdup([fileName UTF8String]);
+
     JRFCrashDetector detector = crashDetector;
     if (!detector) {
         [self setupDefaultCrashReporting];
         detector = [self defaultCrashDetector];
     }
-    
-    BOOL didIntentionallyQuit = [defaults boolForKey:JRFAppDidAbortKey];
+
+    BOOL didIntentionallyQuit = NO;
+    struct stat statbuffer;
+    if (stat(intentionalQuitPathname, &statbuffer) == 0){
+        // A file exists at the path, we had an intentional quit
+        didIntentionallyQuit = YES;
+    }
     BOOL didCrash = detector();
     BOOL didTerminate = [defaults boolForKey:JRFAppWasTerminatedKey];
     BOOL didUpgradeApp = ![[self currentBundleVersion] isEqualToString:[self previousBundleVersion]];
@@ -44,14 +57,15 @@ NSString *JRFAppDidAbortKey = @"JRFAppDidAbortKey";
             handler(!wasInBackground);
         }
     }
-    
+
     [defaults setObject:[self currentBundleVersion] forKey:JRFPreviousBundleVersionKey];
     [defaults setObject:[self currentOSVersion] forKey:JRFPreviousOSVersionKey];
     [defaults setBool:NO forKey:JRFAppWasTerminatedKey];
     [defaults setBool:NO forKey:JRFAppWasInBackgroundKey];
     [defaults setBool:NO forKey:JRFAppDidCrashKey];
-    [defaults setBool:NO forKey:JRFAppDidAbortKey];
     [defaults synchronize];
+    // Remove intentional quit file
+    unlink(intentionalQuitPathname);
 }
 
 #pragma mark termination and backgrounding
@@ -132,9 +146,9 @@ static void defaultExceptionHandler (NSException *exception) {
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-void JRFIntentionalQuitHandler(int signal) {
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:JRFAppDidAbortKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+static void JRFIntentionalQuitHandler(int signal) {
+    int fd;
+    fd = creat(intentionalQuitPathname, S_IREAD | S_IWRITE);
 }
 
 + (JRFCrashDetector)defaultCrashDetector {
