@@ -11,6 +11,9 @@
 		049635AF1B93E96400FF2F72 /* JRFMemoryNoodler.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049635A31B93E96400FF2F72 /* JRFMemoryNoodler.framework */; };
 		049635B61B93E96400FF2F72 /* JRFMemoryNoodlerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 049635B51B93E96400FF2F72 /* JRFMemoryNoodlerTests.m */; };
 		049635C01B93E97500FF2F72 /* JRFMemoryNoodler.m in Sources */ = {isa = PBXBuildFile; fileRef = 049635BF1B93E97500FF2F72 /* JRFMemoryNoodler.m */; };
+		A275D8E71CB43035005A5AD5 /* JRFPathUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = A275D8E51CB43035005A5AD5 /* JRFPathUtilities.h */; };
+		A275D8E81CB43035005A5AD5 /* JRFPathUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A275D8E61CB43035005A5AD5 /* JRFPathUtilities.m */; };
+		A275D8E91CB43035005A5AD5 /* JRFPathUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A275D8E61CB43035005A5AD5 /* JRFPathUtilities.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +34,8 @@
 		049635B41B93E96400FF2F72 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		049635B51B93E96400FF2F72 /* JRFMemoryNoodlerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JRFMemoryNoodlerTests.m; sourceTree = "<group>"; };
 		049635BF1B93E97500FF2F72 /* JRFMemoryNoodler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRFMemoryNoodler.m; sourceTree = "<group>"; };
+		A275D8E51CB43035005A5AD5 /* JRFPathUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRFPathUtilities.h; sourceTree = "<group>"; };
+		A275D8E61CB43035005A5AD5 /* JRFPathUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRFPathUtilities.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +80,8 @@
 			children = (
 				049635A81B93E96400FF2F72 /* JRFMemoryNoodler.h */,
 				049635BF1B93E97500FF2F72 /* JRFMemoryNoodler.m */,
+				A275D8E51CB43035005A5AD5 /* JRFPathUtilities.h */,
+				A275D8E61CB43035005A5AD5 /* JRFPathUtilities.m */,
 				049635A61B93E96400FF2F72 /* Supporting Files */,
 			);
 			path = JRFMemoryNoodler;
@@ -113,6 +120,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				049635A91B93E96400FF2F72 /* JRFMemoryNoodler.h in Headers */,
+				A275D8E71CB43035005A5AD5 /* JRFPathUtilities.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,6 +220,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A275D8E81CB43035005A5AD5 /* JRFPathUtilities.m in Sources */,
 				049635C01B93E97500FF2F72 /* JRFMemoryNoodler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -220,6 +229,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A275D8E91CB43035005A5AD5 /* JRFPathUtilities.m in Sources */,
 				049635B61B93E96400FF2F72 /* JRFMemoryNoodlerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,6 +9,7 @@
 @import UIKit;
 
 #import "JRFMemoryNoodler.h"
+#import "JRFPathUtilities.h"
 
 #include <sys/stat.h>
 
@@ -28,12 +29,11 @@ static char *intentionalQuitPathname;
     signal(SIGABRT, JRFIntentionalQuitHandler);
     signal(SIGQUIT, JRFIntentionalQuitHandler);
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 
     // Set up the static path for intentional aborts
-    NSString *appSupportDirectory = [paths objectAtIndex:0];
-    NSString *fileName = [NSString stringWithFormat:@"%@/intentionalquit.txt", appSupportDirectory];
-    intentionalQuitPathname = strdup([fileName UTF8String]);
+    if ([JRFPathUtilities intentionalQuitPathname]) {
+        intentionalQuitPathname = strdup([JRFPathUtilities intentionalQuitPathname]);
+    }
 
     JRFCrashDetector detector = crashDetector;
     if (!detector) {
@@ -147,8 +147,7 @@ static void defaultExceptionHandler (NSException *exception) {
 }
 
 static void JRFIntentionalQuitHandler(int signal) {
-    int fd;
-    fd = creat(intentionalQuitPathname, S_IREAD | S_IWRITE);
+    creat(intentionalQuitPathname, S_IREAD | S_IWRITE);
 }
 
 + (JRFCrashDetector)defaultCrashDetector {

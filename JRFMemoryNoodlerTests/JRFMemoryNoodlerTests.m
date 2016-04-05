@@ -10,6 +10,7 @@
 @import XCTest;
 @import JRFMemoryNoodler;
 
+#import "JRFPathUtilities.h"
 @interface JRFMemoryNoodlerTests : XCTestCase
 @end
 
@@ -24,7 +25,7 @@
 }
 
 - (void)testAbortDoesNotTriggerOutOfMemoryWarning {
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"JRFAppDidAbortKey"];
+    creat([JRFPathUtilities intentionalQuitPathname], S_IREAD | S_IWRITE);
     [self checkMemoryNoodlerWithExpectation:NO shouldBeInForeground:YES didCrash:NO];
 }
 
@@ -46,6 +47,14 @@
 - (void)testBackgroundingTracksProperly {
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"JRFAppWasInBackgroundKey"];
     [self checkMemoryNoodlerWithExpectation:NO shouldBeInForeground:NO didCrash:YES];
+}
+
+- (void)testIntentionalQuitPathNameIsStable {
+    const char *pathname1 = [JRFPathUtilities intentionalQuitPathname];
+    const char *pathname2 = [JRFPathUtilities intentionalQuitPathname];
+    if (strcmp(pathname1, pathname2)) {
+        XCTFail(@"Intentional Quit pathnames not equal");
+    }
 }
 
 - (void)checkMemoryNoodlerWithExpectation:(BOOL)shouldRegisterOutOfMemory
